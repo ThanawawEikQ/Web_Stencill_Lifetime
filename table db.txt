@@ -1,0 +1,8 @@
+pcl 7500 ethernet
+
+DQC856 DETAIL USEING STENCILL AND Life TIME
+
+DQCS71  //STOP_DATE is null means it's still running
+DQCS70 Stencil Life Time
+
+DQC341ST HISTORY PCBA USE STENCIL

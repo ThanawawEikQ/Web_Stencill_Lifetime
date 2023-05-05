@@ -1,0 +1,85 @@
+﻿@using System.Globalization
+@using Web_Stencill_Lifetime.Data;
+@using Web_Stencill_Lifetime.Model;
+<div class="container">
+    <div class="main-content">
+        <div class="row mt-5">
+        <div class="col">
+          <div class="card bg-default shadow bg-dark">
+            <div class="card-header bg-transparent border-0">
+              <h3 class="text-white mb-0">Stencil control</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-items-center table-dark table-flush">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">LINE NO</th>
+                    <th scope="col">STENCIL NO</th>
+                    <th scope="col">MODEL</th>
+                    <th scope="col">LIFE SPAN</th>
+                    <th scope="col">MAX LIFE-SPAN</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @if(ob != null)
+                 {
+                  @foreach(var item in ob)
+                  {
+                  <tr>
+                     <th scope="col" style="width: 130px">@item.line_no</th>
+                     <th scope="col"  style="width: 130px">@item.Stencil_no</th>
+                     <th scope="col"  style="width: 130px">@item.Model</th>
+                     <th scope="col"  style="width: 130px">@item.accu_times</th>
+                     <th scope="col"  style="width: 180px">@item.Total_times</th>
+                     <th scope="col">
+                         <div class="Prsbar">
+                               <div><h6>Count:@item.accu_times</h6></div>
+                               <div class="progress p-0">
+                                   <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@item.accu_times" aria-valuemin="0" aria-valuemax="@item.Total_times" style="width:  @($"{CalculatePersen(item.accu_times, item.Total_times)}")%">
+                                        @($"{CalculatePersen(item.accu_times, item.Total_times)}%")
+                                    </div>
+                                   </div>
+                               <div ><h6>Exp: @item.Total_times</h6></div>
+
+                         </div>
+                    
+                     </th>
+                  </tr>
+                  }                
+                 }
+                
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>                            
+
+
+
+@code {
+    bool showDataLabels = true;
+    private int Numpercen= 100;
+    GetData db = new GetData();
+    private List<ObjStencil> ob = new List<ObjStencil>(); 
+    protected override async Task OnInitializedAsync()
+    {
+        await  GetData();
+    }
+
+    private async Task GetData()
+    {
+        try
+        {
+            ob =  await db.GetStencil();
+        }   catch{}
+    }
+    private  int CalculatePersen(int data,int total)
+    {
+            int result = (data / total) * 100;
+            return result;
+    }
+}
