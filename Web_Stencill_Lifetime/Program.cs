@@ -10,10 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 SqlContect.conStr = builder.Configuration["ConnectionStrings:oracle_conn"];
-
+SqlContectDX26.conStr = builder.Configuration["ConnectionStrings:oracle_connDX26"];
+builder.Services.AddSignalR();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<ObjStencil>();
+builder.Services.AddScoped<ObjStencil>();
+builder.Services.AddScoped<GetData>();
+builder.Services.AddScoped<SqlContect>();
+builder.Services.AddScoped<SqlContectDX26>();
+builder.Services.AddScoped<SqlData>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();

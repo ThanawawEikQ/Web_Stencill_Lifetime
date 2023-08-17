@@ -1,8 +1,74 @@
-﻿
-.Prsbar{
-    position:relative;
-    display:grid;
+﻿.container {
+    background-color: #2C394B;
+    border-radius:1rem;
+}
+.Prsbar {
+    position: relative;
+    display: grid;
     grid-template-columns: 15% 70% 15%;
+    text-align: center;
+    align-content: center;
+}
+.ExitBtn {
+    display: flex;
+    justify-content: center;
+}
+
+.ExitBtn div button {
+    color: white;
+}
+.ExitBtn div button:hover{
+    outline:2px solid green;
+}
+
+
+.Menubtn {
+    display: flex;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 3px;
+    border: 2px solid green;
+
+}
+.Menubtn:hover{
+    border:2px solid white;
+}
+.btnLnk{
+    text-decoration:none;
+    color:white;
+}
+.HeadTable {
+    border-radius: 10px;
+    background-color: #30d317;
+}
+.HeadTable tr th{
+    width:180px;
+    border:1px solid black;
+
+    height:50px;
+    padding:0;
+    background-color: #006ac3 ;
+}
+.HeadTable tr th h4{
     text-align:center;
-    align-content:center;
+    font-family:'Arial Rounded MT';
+    color:white;
+
+}
+.BodyTable {
+    background-color: #6B728E;
+}
+tbody tr th {
+    text-align: center;
+    font-family: 'Arial Rounded MT';
+    border: 1px solid black;
+}
+
+
+.highlighted-row {
+    background-color: yellow;
+}
+
+.highlighted-cell {
+    background-color: orange;
 }

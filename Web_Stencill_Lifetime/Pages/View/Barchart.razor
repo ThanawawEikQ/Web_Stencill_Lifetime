@@ -1,76 +1,106 @@
 ﻿@using System.Globalization
+@using Microsoft.AspNetCore.SignalR;
 @using Web_Stencill_Lifetime.Data;
 @using Web_Stencill_Lifetime.Model;
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Components.Web
+@inject IHubContext<AutoRefreshHub> AutoRefreshHubContext;
+
 <div class="container">
-    <div class="main-content">
+    <div class="main-content ">
+
         <div class="row mt-5">
         <div class="col">
-          <div class="card bg-default shadow bg-dark">
-            <div class="card-header bg-transparent border-0">
-              <h3 class="text-white mb-0">Stencil control</h3>
+            <div class="card-header bg-transparent border-0">  
+              <br />
+              <div class="ExitBtn">
+                  <div class="justify-content-center"><h1 class="text-white mb-0 ">Stencil Monitoring System</h1></div>
+                 
+              </div>
             </div>
-            <div class="table-responsive">
-              <table class="table align-items-center table-dark table-flush">
-                <thead class="thead-dark">
+              <hr style="color:white;" />
+              
+            <div class="table table-responsive p-1 rounded-1  border-primar y">
+               @if(Modal==false){
+               <table class="table table-striped table-hover ">
+                <thead class="HeadTable">
                   <tr>
-                    <th scope="col">LINE NO</th>
-                    <th scope="col">STENCIL NO</th>
-                    <th scope="col">MODEL</th>
-                    <th scope="col">LIFE SPAN</th>
-                    <th scope="col">MAX LIFE-SPAN</th>
-                    <th scope="col"></th>
+                    <th scope="col"><h4>Line No</h4></th>
+                    <th scope="col"><h4>Stencil No</h4></th>
+                    <th scope="col"><h4>Model</h4></th>
+                    <th scope="col"><h4>Date Time</h4></th>
+                    <th scope="col"><h4>Clean Time</h4></th>
+                    <th scope="col"><h4>Total time</h4></th>
+                    <th scope="col"><h4>Acc Output</h4></th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="BodyTable">
                   @if(ob != null)
-                 {
-                  @foreach(var item in ob)
                   {
-                  <tr>
-                     <th scope="col" style="width: 130px">@item.line_no</th>
-                     <th scope="col"  style="width: 130px">@item.Stencil_no</th>
-                     <th scope="col"  style="width: 130px">@item.Model</th>
-                     <th scope="col"  style="width: 130px">@item.accu_times</th>
-                     <th scope="col"  style="width: 180px">@item.Total_times</th>
-                     <th scope="col">
-                         <div class="Prsbar">
-                               <div><h6>Count:@item.accu_times</h6></div>
-                               <div class="progress p-0">
-                                   <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@item.accu_times" aria-valuemin="0" aria-valuemax="@item.Total_times" style="width:  @($"{CalculatePersen(item.accu_times, item.Total_times)}")%">
-                                        @($"{CalculatePersen(item.accu_times, item.Total_times)}%")
-                                    </div>
-                                   </div>
-                               <div ><h6>Exp: @item.Total_times</h6></div>
-
-                         </div>
-                    
-                     </th>
-                  </tr>
-                  }                
-                 }
+                      @foreach(var item in ob)
+                      {
+                      <tr >
+                         <th scope="col" style="width: 130px;color:white;">@item.line_no</th>
+                         <th scope="col"  style="width: 130px;color:white;">@item.Stencil_no</th>
+                         <th scope="col"  style="width: 130px;color:white;">@item.Model</th>
+                         <th scope="col"  style="width: 130px;color:white;">@(DateStart(item.Start_date))</th>
+                         <th scope="col"  style="width: 130px;color:white;@GetCellStyle(item.Start_date,1)">
+                           @if(IconAlert(item.Start_date)==true) {<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-diamond-fill" viewBox="0 0 16 16">
+                              <path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                            </svg>}@(Cleaning(item.Start_date))</th>
+                          <th scope="col"  style="width: 130px;color:white;">@item.Total_times</th>
+                         <th scope="col"  style="width: 180px;color:white;">@item.accu_times</th>
+     
+                      </tr>
+                      }                
+                  }
                 
                 </tbody>
-              </table>
+                </table>
+              }
+              else
+              {
+                  <DetailStencil />
+              }
             </div>
           </div>
         </div>
-      </div>
     </div>
-</div>                            
-
-
+</div>      
 
 @code {
+
+      private Timer timer;
+    private bool Modal = false;
+
+    private string StrTest { get; set; }
+
+    [Inject]
+    public NavigationManager Navigation { get; set; }
+
     bool showDataLabels = true;
     private int Numpercen= 100;
+
     GetData db = new GetData();
+
     private List<ObjStencil> ob = new List<ObjStencil>(); 
+
     protected override async Task OnInitializedAsync()
     {
-        await  GetData();
+        try
+        {     
+            
+            StrTest = "Stencil Detail";
+            await AutoRefreshHubContext.Clients.All.SendAsync("Refresh");
+            await  GetData();
+            timer = new Timer(RefreshTime, null, 0, 5000);
+
+        }catch{}    
+
     }
 
     private async Task GetData()
+
     {
         try
         {
@@ -79,7 +109,143 @@
     }
     private  int CalculatePersen(int data,int total)
     {
-            int result = (data / total) * 100;
+        int result = 0;
+        try
+        {
+            result = data / total * 100;
             return result;
+        }   catch{  return result;}
+
     }
+
+    private int SumData(ObjStencil Data)
+    {
+        int result = 0;
+
+        try
+        {
+            if(Data.Model != "SDES26")
+            {
+                Data.accu_times = 250;
+            } 
+        }   catch{}
+
+        return Data.accu_times;
+    }
+
+    private async Task GetPage()
+    {
+        Navigation.NavigateTo("http://m21100400012002.mamfg.calcomp.co.th:7072/");
+    }
+
+
+    private async Task ShowModals()
+    { 
+
+        if(Modal == true)
+        {
+            StrTest = "Stencil Detail";
+            Modal = false ;  
+        }
+        else
+        {
+            StrTest = "Stencil Using in line";
+
+            Modal = true;    
+        }
+
+    }
+    private string DateStart(string date)
+    {
+        string result;
+        try
+        {
+            result = DateTime.Parse(date).ToString("dd-MM-yy HH:mm tt");
+            return result;
+        }   catch{ throw; }
+    }
+    private string Cleaning(string date)
+    {
+        string result;
+        try
+        {
+            result = DateTime.Parse(date).AddHours(8).ToString("dd-MM-yy HH:mm tt");
+
+            return " "+ result;
+        }   catch{ throw; }
+    }
+    private bool IconAlert(string Data)
+    {   
+        string dateSum = DateTime.Parse(Data).AddHours(8).ToString();
+        DateTime Dnow = DateTime.Now ;
+        DateTime date = DateTime.Parse(dateSum);
+        bool reuslt = false;
+        try
+        {
+            if(Dnow > date)
+            {
+                reuslt = true;
+            }
+            else
+            {    reuslt = false;
+
+            }
+            return reuslt;
+        }   catch{return reuslt;}
+    }
+
+
+
+    private string GetCellStyle(string Data,int Mode)
+    {
+        string dateSum = DateTime.Parse(Data).AddHours(8).ToString();
+        DateTime Dnow = DateTime.Now ;
+        DateTime date = DateTime.Parse(dateSum);
+        string result = "";
+        if(Mode ==1)
+        {
+            if(Dnow > date)
+            {
+                result = "background-color:#FF4C29;"; 
+            }
+            else
+            {
+                result = "background-color: #334756;"; 
+            }
+        }
+        return result; 
+    }
+
+    protected override void OnInitialized()
+    {
+        // Start the timer with an interval of 5 seconds (5000 milliseconds)
+
+    }
+
+    private void RefreshTime(object state)
+    {
+        // Use InvokeAsync to switch back to the main UI thread
+        InvokeAsync(() =>
+        {
+            // Update the current time on the UI
+            DataUpdate();
+            StateHasChanged();
+        });
+    }
+
+    // Don't forget to dispose of the timer when the component is disposed
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+    private async void DataUpdate()
+    {
+        try
+        {
+           StrTest = "Stencil Detail";
+          await  AutoRefreshHubContext.Clients.All.SendAsync("Refresh");
+          await  GetData();
+        }   catch{}
+    }
+
 }

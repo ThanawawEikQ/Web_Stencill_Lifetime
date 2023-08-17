@@ -1,0 +1,94 @@
+﻿.girdContent {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 80%;
+    padding: 1% 1% 5% 1%;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    background-color:  rgb(0, 107, 255);
+    border-radius: 15px;
+}
+
+.Griditem {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    gap: 50px;
+}
+
+    .Griditem:first-child {
+        height: 10%;
+        padding: 1%;
+        display: flex;
+        justify-content: start;
+        color: white;
+    }
+
+    .Griditem:last-child {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+.childgird {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    align-content: center;
+    width: 260px;
+    padding: 2%;
+    background-color: white;
+    color: black;
+    box-shadow: 2px 5px 10px rgba(0, 0,0, 0.5);
+    border-radius: 6px;
+}
+
+    .childgird hr {
+        color: darkgreen
+    }
+
+    .childgird:first-child {
+        border-right: 13px solid rgb(255, 106, 0);
+    }
+
+    .childgird:nth-child(2) {
+        border-right: 13px solid rgb(255, 0, 0);
+    }
+
+.girdItemAlljig {
+    margin: 1%;
+    width: 220px;
+}
+
+.CardAlljig {
+    grid-template-columns: 1fr;
+}
+
+.girdItemAlljig:first-child {
+    display: flex;
+    display: grid;
+    justify-content: start;
+    align-content: center;
+    align-items: center;
+}
+
+.girdItemAlljig:last-child div:first-child {
+    color: rgb(0, 69, 232);
+}
+
+.girdItemAlljig:last-child div h1 {
+    font-size: 66px;
+    color: rgb(38, 38, 38);
+    font-weight: 500;
+}
+
+.girdItemAlljig:last-child {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    align-content: center;
+    align-items: center;
+}
+
+    .girdItemAlljig:last-child div:last-child {
+        width: 100%;
+    }

@@ -1,0 +1,63 @@
+﻿@using System.Globalization
+@using Web_Stencill_Lifetime.Data;
+@using Web_Stencill_Lifetime.Model;
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Components.Web
+
+	   <table class="table table-striped table-hover">
+           <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">STENCIL_NO</th>
+                    <th scope="col">STENCIL_REV</th>
+                    <th scope="col">MODEL</th>
+                    <th scope="col">DESCRIPTION</th>
+                    <th scope="col">TOTAL_TIME</th>
+                    <th scope="col">ACCU_TIMES</th>
+                    <th scope="col">STATUS</th>
+                  </tr>
+           </thead>
+           <tbody>
+                  @if(ob != null)
+                 {
+                  @foreach(var item in ob)
+                  {
+                  <tr>
+                     <th scope="col" style="width: 100px">@item.STENCIL_NO</th>
+                     <th scope="col"  style="width: 100px">@item.STENCIL_REV</th>
+                     <th scope="col"  style="width: 100px">@item.MODEL</th>
+                     <th scope="col"  style="width: 150px">@item.DESCRP</th>
+                     <th scope="col"  style="width: 100px">@item.TOTAL_TIME</th>
+                     <th scope="col"  style="width: 100px">@item.ACCU_TIMES</th>
+                     <th scope="col"  style="width: 100px">@item.STATUS</th>
+  
+                  </tr>
+                  }                
+                 }
+                
+           </tbody>
+       </table>
+@code {
+
+
+    bool showDataLabels = true;
+
+
+    GetData db = new GetData();
+
+    private List<ObjStencillAll> ob = new List<ObjStencillAll>(); 
+
+    protected override async Task OnInitializedAsync()
+    {
+        await  GetData();
+    }
+
+    private async Task GetData()
+    {
+        try
+        {
+            ob =  await db.GetStencilAll();
+        }   catch{}
+    }
+
+
+}

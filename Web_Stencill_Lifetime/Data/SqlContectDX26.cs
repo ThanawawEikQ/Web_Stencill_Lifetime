@@ -5,7 +5,7 @@ using System.Data.OracleClient;
 
 namespace Web_Stencill_Lifetime.Data
 {
-	public class SqlContect
+	public class SqlContectDX26
 	{
 		public static string conStr;
 		public static OracleConnection GetConnection()								

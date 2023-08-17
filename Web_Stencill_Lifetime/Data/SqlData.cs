@@ -3,6 +3,7 @@ using Microsoft.VisualBasic;
 using MySqlConnector;
 using System.Data.OleDb;
 using System.Data.OracleClient;
+using Oracle.ManagedDataAccess.Client;
 
 namespace Web_Stencill_Lifetime.Data
 {
@@ -27,7 +28,7 @@ namespace Web_Stencill_Lifetime.Data
 			catch { return Result; throw; }
 		}
 
-        public async Task<DataTable> QueryDataTable(string SqlCmdIn)
+        public  DataTable QueryDataTable(string SqlCmdIn)
         {
 
                 OracleConnection conn = SqlContect.GetConnection();
@@ -43,7 +44,23 @@ namespace Web_Stencill_Lifetime.Data
                 return DS.Tables[0];
         
         }
+		public DataTable QueryDataTableDX26(string SqlCmdIn)
+		{
 
-    }
+			OracleConnection conn = SqlContectDX26.GetConnection();
+			conn.Open();
+			OracleCommand odbcc = new OracleCommand();
+			odbcc.CommandText = SqlCmdIn;
+			odbcc.Connection = conn;
+			OracleDataAdapter odbca = new OracleDataAdapter(odbcc);
+			DS.Clear();
+
+			odbca.Fill(DS);
+
+			return DS.Tables[0];
+
+		}
+
+	}
 }
 
